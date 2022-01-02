@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["dataProxy"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model articles {
+  id Int @id @default(autoincrement())
+  title String
+  body String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model sektor {
+  id Int @id @default(autoincrement())
+  nama_sektor String
+  info info_sektor[]
+  pj_sektor String  
+  tw tw_sektor[]
+  
+}
+
+model info_sektor {
+  id Int  @default(autoincrement())
+  sektor_info  sektor @relation(fields: [id_sektor], references: [id])
+  id_sektor Int
+  info_sektor String
+  @@id([id, id_sektor])
+  
+}
+
+model tw_sektor {
+  id Int @default(autoincrement())
+  sektor_tw    sektor    @relation(fields: [id_sektor], references: [id])
+  id_sektor Int
+  tw        twType @default(TW1)
+  @@id([ id, id_sektor, tw ])
+  @@unique([id_sektor, tw])
+}
+
+
+model tema {
+  id Int  @default(autoincrement())
+  
+  id_sektor Int
+  nama_tema String
+  info info_tema[]
+  pj_tema String  
+  tw tw_tema[]
+  @@id([id, id_sektor])
+}
+
+model info_tema {
+  id  Int @default(autoincrement())
+  tema tema @relation(fields: [id_tema], references: [id])
+  id_tema Int
+  info_tema String
+  @@id([id, id_tema])
+}
+
+model tw_tema {
+  id Int @default(autoincrement())
+  tema tema @relation(fields: [id_tema], references: [id])
+  id_tema Int
+  tw twType @default(TW1)
+  @@id([id, id_tema, tw])
+  @@unique([id_tema, tw])
+}
+
+
+enum twType {
+  TW1 @map("1")
+  TW2 @map("2")
+  TW3 @map("3")
+  TW4 @map("4")
+}
+
