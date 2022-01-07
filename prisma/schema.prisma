@@ -12,74 +12,111 @@ datasource db {
 }
 
 model articles {
-  id Int @id @default(autoincrement())
-  title String
-  body String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model sektor {
-  id Int @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   nama_sektor String
-  info info_sektor[]
-  pj_sektor String  
-  tw tw_sektor[]
-  
+  info        info_sektor[]
+  tema        tema[]
+  topik topik[]
+  pj_sektor   String
+  tw          tw_sektor[]
+
 }
 
 model info_sektor {
-  id Int  @default(autoincrement())
-  sektor_info  sektor @relation(fields: [id_sektor], references: [id])
-  id_sektor Int
+  id          Int    @default(autoincrement())
+  sektor_info sektor @relation(fields: [id_sektor], references: [id])
+  id_sektor   Int
   info_sektor String
+
   @@id([id, id_sektor])
-  
 }
 
 model tw_sektor {
-  id Int @default(autoincrement())
-  sektor_tw    sektor    @relation(fields: [id_sektor], references: [id])
+  id        Int    @default(autoincrement())
+  sektor_tw sektor @relation(fields: [id_sektor], references: [id])
   id_sektor Int
   tw        twType @default(TW1)
-  @@id([ id, id_sektor, tw ])
+
+  @@id([id, id_sektor, tw])
   @@unique([id_sektor, tw])
 }
 
-
 model tema {
-  id Int  @default(autoincrement())
-  
+  id        Int         @default(autoincrement())
+  sektor    sektor      @relation(fields: [id_sektor], references: [id])
   id_sektor Int
   nama_tema String
-  info info_tema[]
-  pj_tema String  
-  tw tw_tema[]
+  info      info_tema[]
+  topik     topik[]
+  pj_tema   String
+  tw        tw_tema[]
+
   @@id([id, id_sektor])
 }
 
 model info_tema {
-  id  Int @default(autoincrement())
-  tema tema @relation(fields: [id_tema], references: [id])
-  id_tema Int
+  id        Int    @default(autoincrement())
+  tema      tema   @relation(fields: [id_tema], references: [id])
+  id_tema   Int
   info_tema String
+
   @@id([id, id_tema])
 }
 
 model tw_tema {
-  id Int @default(autoincrement())
-  tema tema @relation(fields: [id_tema], references: [id])
+  id      Int    @default(autoincrement())
+  tema    tema   @relation(fields: [id_tema], references: [id])
   id_tema Int
-  tw twType @default(TW1)
+  tw      twType @default(TW1)
+
   @@id([id, id_tema, tw])
   @@unique([id_tema, tw])
 }
 
+model topik {
+  id         Int          @default(autoincrement())
+  sektor sektor @relation(fields: [id_sektor], references: [id])
+  id_sektor Int
+  tema       tema         @relation(fields: [id_tema], references: [id])
+  id_tema    Int
+  nama_topik String
+  info       info_topik[]
+  pj_topik   String
+  tw         tw_topik[]
 
-enum twType {
-  TW1 @map("1")
-  TW2 @map("2")
-  TW3 @map("3")
-  TW4 @map("4")
+  @@id([id, id_sektor, id_tema])
 }
 
+model info_topik {
+  id         Int    @default(autoincrement())
+  topik      topik  @relation(fields: [id_topik], references: [id])
+  id_topik   Int
+  info_topik String
+
+  @@id([id, id_topik])
+}
+
+model tw_topik {
+  id       Int    @default(autoincrement())
+  topik    topik  @relation(fields: [id_topik], references: [id])
+  id_topik Int
+  tw       twType @default(TW1)
+
+  @@id([id, id_topik, tw])
+  @@unique([id_topik, tw])
+}
+
+enum twType {
+  TW1  @map("1")
+  TW2  @map("2")
+  TW3  @map("3")
+  TW4  @map("4")
+}
