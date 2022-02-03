@@ -3,16 +3,19 @@ import type { AppProps } from "next/app";
 import HeaderComp from "components/HeaderComp";
 import Head from "next/head";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <div className="bg-black h-screen pt-10">
-      <Head>
-        <link rel="icon" href="/img/favicon.ico" />
-      </Head>
-      <HeaderComp />
-      <Component {...pageProps} />
-    </div>
-  );
+import type { ReactElement, ReactNode } from "react";
+import type { NextPage } from "next";
+
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
+  return getLayout(<Component {...pageProps} />);
 }
 
 export default MyApp;

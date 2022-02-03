@@ -3,12 +3,16 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
   // previewFeatures = ["dataProxy"]
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  planetScaleMode   = true
+  
 }
 
 model articles {
